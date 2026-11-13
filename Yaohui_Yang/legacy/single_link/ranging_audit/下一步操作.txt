@@ -1,0 +1,66 @@
+V5 单链路测距：本轮结论与操作
+
+已检查文件
+QAR_FTM_S3_v5_FRAME_MATCH.zip
+V5_LOS_1m_A_R1.zip / V5_LOS_2m_A_R1.zip / V5_LOS_3m_A_R1.zip
+
+本轮核对结果
+1m：58 次成功会话；距离中位数 4.50m；会话样本标准差 0.203m。
+2m：59 次成功会话；距离中位数 6.45m；会话样本标准差 0.193m。
+3m：58 次成功会话；距离中位数 8.70m；会话样本标准差 0.527m。
+共 5,224 条有效逐帧 RTT，均与 (t4-t1)-(t3-t2) 完全一致。
+CSV 距离均等于官方 dist_est_cm/100，差值为零。
+会话 rtt_est_ns 换算距离与 dist_est 的最大差值约 0.00654m；
+该差值量级与这些整数输出的量化相容，不能解释数米偏差。
+三组全部 Action33 CSI 的 cwb 均为 0，记录的是 20MHz CSI。
+源码中 LAB_USE_HT40=0，LAB_FTM_OFFSET_CM=0；未实现 CIR 距离修正。
+结论限于这份源码和这批数据。未直接检查用户电脑上的最新源文件，
+也未验证当前已烧录二进制与压缩包源码完全一致。
+
+判断
+未发现漏除以2、ps/ns/cm/m混用或CSV重复换算问题。
+偏差已体现在驱动返回的测量结果中。
+这不证明硬件损坏，也不能据此把原因全部归于多径。
+现有数据不足以验证通用校准模型或CSI补偿的跨位置效果。
+暂不重新烧录，不追加底层补丁，不强行拟合一个“准确”距离公式。
+
+用户接下来只需先完成 B_R1 这组 2m 对照并上传 ZIP。
+选择方便复现、无遮挡的位置，标记为 B，天线间距 2.00m。
+两根天线竖直平行、高度相同，设备和电脑保持固定，测量时人离开直达路径。
+尽量避开紧贴金属桌面或墙角的摆放，并记录天线高度。
+关闭占用 COM12 的 monitor/串口窗口，使用普通 Windows PowerShell。
+如果实际端口已变化，将 COM12 改为实际 Tag 串口。
+
+cd C:\\Users\\YOUR_USER\Desktop\QAR_FTM_S3_v5_FRAME_MATCH
+python .\tools\record_serial_2min.py --port COM12 --condition LOS --distance-m 2.0 --trial V5_LOS_2m_B_R1 --seconds 120 --notes "site=B;baseline;record antenna height separately"
+python .\tools\pair_ftm_action33.py .\recordings\V5_LOS_2m_B_R1 --coherence-ns 5
+Compress-Archive -Path .\recordings\V5_LOS_2m_B_R1 -DestinationPath .\V5_LOS_2m_B_R1.zip
+
+上传工程根目录下 V5_LOS_2m_B_R1.zip。
+--distance-m 2.0 只记录真实距离标签和计算实验误差，不会修正设备输出。
+如果同名试验文件夹已存在，请改用新的试验编号，避免覆盖旧数据。
+不要同时开 monitor 和采集程序，两者会争用串口。
+
+后续对照安排（无需现在全部执行）
+1. B_R2：两块板和天线不动、保持供电，重复同一组2m。
+   串口打开有可能使Tag复位；如发生复位，记录并改为“重启复测”。
+2. B_R3：保留几何布置，两块板重新上电，等待连接后复测2m。
+3. C_R1：将整套装置平移，保持2.00m间距、朝向与高度，复测。
+B_R1/R2比较短期可重复性；B_R1/R3比较重启相关变化；B/C比较摆放影响。
+若要严格隔离Tag重启，需要单次连续打开串口或控制串口握手，
+不能把分次打开串口自动等同于“未重启”。
+之后再决定做功率对照、固定偏移校准还是CSI残差补偿。
+有意改变功率时必须记录两端设置、接收RSSI和有效帧率。
+
+附带核查脚本
+audit_v5_ranging.py 仅使用Python标准库，无需重新烧录或安装新依赖。
+可读取包含metadata.json的采集目录，或Windows生成的ZIP。
+它不会修改原始文件，也不会输出“修正后距离”。
+示例：将脚本复制到现有工程的tools目录，执行：
+python .\tools\audit_v5_ranging.py .\recordings\V5_LOS_2m_B_R1
+要保存核查结果，可以添加 --output .\audit_B_R1.json
+如果该JSON已存在，脚本会拒绝覆盖；请选择新文件名。
+
+执行环境与验证
+已在这三份原始ZIP和解压目录上运行，结果一致。
+没有连接实体板卡，没有在Windows上运行，没有重新编译固件。

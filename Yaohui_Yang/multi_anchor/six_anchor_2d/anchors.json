@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "coordinate_units": "m",
+  "tag_height_m": 1.7,
+  "min_anchors": 4,
+  "max_seed_age_s": 30,
+  "filter_reset_gap_s": 12,
+  "acceleration_sigma_m_s2": 0.8,
+  "innovation_gate_sigma": 5.0,
+  "max_geometry_condition": 1000,
+  "allow_ood": false,
+  "unverified_range_sigma_m": 3.0,
+  "ood_sigma_m": 8.0,
+  "model_train_distance_m": [
+    1,
+    15
+  ],
+  "anchors": {
+    "A1": {
+      "x": 1.0,
+      "y": 1.0,
+      "z": 1.7,
+      "ssid": "RTT_CIR_A1",
+      "expected_bssid": null
+    },
+    "A2": {
+      "x": 4.0,
+      "y": 1.0,
+      "z": 1.7,
+      "ssid": "RTT_CIR_A2",
+      "expected_bssid": null
+    },
+    "A3": {
+      "x": 7.0,
+      "y": 1.0,
+      "z": 1.7,
+      "ssid": "RTT_CIR_A3",
+      "expected_bssid": null
+    },
+    "A4": {
+      "x": 7.0,
+      "y": 4.0,
+      "z": 1.7,
+      "ssid": "RTT_CIR_A4",
+      "expected_bssid": null
+    },
+    "A5": {
+      "x": 4.0,
+      "y": 4.0,
+      "z": 1.7,
+      "ssid": "RTT_CIR_A5",
+      "expected_bssid": null
+    },
+    "A6": {
+      "x": 1.0,
+      "y": 4.0,
+      "z": 1.7,
+      "ssid": "RTT_CIR_A6",
+      "expected_bssid": null
+    }
+  }
+}
