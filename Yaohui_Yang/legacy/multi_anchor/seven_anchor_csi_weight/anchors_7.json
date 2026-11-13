@@ -1,0 +1,88 @@
+{
+  "serial_port": "COM5",
+  "baudrate": 115200,
+  "target_z_m": 0.0,
+  "use_height_compensation": false,
+  "min_anchors_for_solution": 3,
+  "preferred_anchors_for_solution": 4,
+  "max_range_m": 80.0,
+  "solver": {
+    "huber_delta_m": 2.0,
+    "range_sigma_floor_m": 0.35,
+    "process_accel_sigma_mps2": 2.5,
+    "enable_kalman": true
+  },
+  "csi_weighting": {
+    "packets_full": 6,
+    "rssi_center_dbm": -78.0,
+    "rssi_scale_db": 8.0,
+    "rssi_std_good_db": 1.5,
+    "rssi_std_bad_db": 8.0,
+    "power_cv_good": 0.1,
+    "power_cv_bad": 0.8,
+    "roughness_good": 0.25,
+    "roughness_bad": 3.5,
+    "csi_sigma_min_m": 0.35,
+    "csi_sigma_max_m": 6.0,
+    "csi_reliability_floor": 0.03,
+    "reliability_exponent": 2.0,
+    "ftm_entries_full": 6,
+    "min_relative_weight": 0.005
+  },
+  "view": {
+    "padding_m": 4.0,
+    "trajectory_points": 600,
+    "history_seconds": 30.0
+  },
+  "anchors": {
+    "1": {
+      "name": "A1",
+      "x_m": 1.0,
+      "y_m": 1.0,
+      "z_m": 1.7,
+      "enabled": true
+    },
+    "2": {
+      "name": "A2",
+      "x_m": 4.0,
+      "y_m": 1.0,
+      "z_m": 1.7,
+      "enabled": true
+    },
+    "3": {
+      "name": "A3",
+      "x_m": 7.0,
+      "y_m": 1.0,
+      "z_m": 1.7,
+      "enabled": true
+    },
+    "4": {
+      "name": "A4",
+      "x_m": 7.0,
+      "y_m": 4.0,
+      "z_m": 1.7,
+      "enabled": true
+    },
+    "5": {
+      "name": "A5",
+      "x_m": 4.0,
+      "y_m": 4.0,
+      "z_m": 1.7,
+      "enabled": true
+    },
+    "6": {
+      "name": "A6",
+      "x_m": 1.0,
+      "y_m": 4.0,
+      "z_m": 1.7,
+      "enabled": true
+    },
+    "8": {
+      "name": "A8",
+      "x_m": 4.0,
+      "y_m": 2.5,
+      "z_m": 1.7,
+      "enabled": true
+    }
+  }
+}

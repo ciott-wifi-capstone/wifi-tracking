@@ -1,0 +1,43 @@
+menu "FTM + CSI 3-D tag"
+    config FTM_MAX_ANCHORS
+        int "Number of anchors"
+        range 4 5
+        default 5
+    choice FTM_FRAME_COUNT_CHOICE
+        prompt "FTM frames per session"
+        default FTM_FRAMES_16
+        config FTM_FRAMES_16
+            bool "16"
+        config FTM_FRAMES_24
+            bool "24"
+        config FTM_FRAMES_32
+            bool "32"
+        config FTM_FRAMES_64
+            bool "64"
+    endchoice
+    config FTM_FRAME_COUNT
+        int
+        default 16 if FTM_FRAMES_16
+        default 24 if FTM_FRAMES_24
+        default 32 if FTM_FRAMES_32
+        default 64 if FTM_FRAMES_64
+    config FTM_BURST_PERIOD
+        int "Burst period in units of 100 ms (0 = no preference)"
+        range 0 100
+        default 0
+    config FTM_SESSION_TIMEOUT_MS
+        int "Per-anchor timeout (ms)"
+        range 300 5000
+        default 1500
+    config FTM_RESCAN_PERIOD_MS
+        int "Anchor rescan period (ms)"
+        range 1000 60000
+        default 10000
+    config COMMON_CHANNEL
+        int "Common CSI channel"
+        range 1 13
+        default 6
+    config TAG_BW40
+        bool "Use HT40 (must match anchors)"
+        default n
+endmenu

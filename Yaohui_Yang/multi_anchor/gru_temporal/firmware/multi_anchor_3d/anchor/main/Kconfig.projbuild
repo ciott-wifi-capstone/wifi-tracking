@@ -1,0 +1,21 @@
+menu "FTM + CSI 3-D anchor"
+    config ANCHOR_ID
+        int "Anchor ID (flash one unique ID to each board)"
+        range 1 12
+        default 1
+    config ANCHOR_CHANNEL
+        int "Common Wi-Fi channel"
+        range 1 13
+        default 6
+    config ANCHOR_BW40
+        bool "Use HT40 (all six boards must match)"
+        default n
+    config FTM_RESP_OFFSET_CM
+        int "Responder hardware offset (cm)"
+        range -30000 30000
+        default 0
+    config CSI_PROBE_PERIOD_MS
+        int "CSI probe interval (ms)"
+        range 25 1000
+        default 80
+endmenu

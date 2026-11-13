@@ -1,0 +1,17 @@
+menu "Multi-anchor responder"
+    config FTM_ANCHOR_ID
+        int "Anchor ID"
+        range 1 8
+        default 1
+    config FTM_ANCHOR_CHANNEL
+        int "Wi-Fi channel"
+        range 1 13
+        default 6
+    config FTM_ANCHOR_BW40
+        bool "Use HT40 bandwidth"
+        default y
+    config FTM_RESP_OFFSET_CM
+        int "Responder hardware offset (cm)"
+        range -30000 30000
+        default 0
+endmenu
