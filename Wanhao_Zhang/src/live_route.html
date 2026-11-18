@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A0 · 实时轨迹与定点标记</title>
+<style>
+:root{--bg:#f2f5fa;--surface:#fff;--ink:#19283f;--muted:#69758a;--line:#e2e8f0;--blue:#2963d4;--amber:#c68215;--purple:#7d64aa;--green:#187655;--red:#be3849;--shadow:0 5px 22px #19334c07;font-family:Inter,"Segoe UI","Microsoft YaHei",system-ui,sans-serif;color:var(--ink);background:var(--bg);font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.46}button,input,select,textarea{outline:none}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{box-shadow:0 0 0 3px #2963d42b;border-color:var(--blue)}button{border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink);padding:10px 14px;font-size:13px;font-weight:600;transition:background .12s,transform .12s}button:hover:not(:disabled){background:#f2f6ff}button:active:not(:disabled){transform:translateY(1px)}input,select,textarea{border:1px solid #d8e1ed;border-radius:8px;padding:10px 11px;color:var(--ink);background:#fff;min-width:0}input,select{width:100%;font-size:13px}textarea{width:100%;font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:13px;line-height:1.75;resize:vertical}label{font-size:12px;color:var(--muted)}.mono{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-variant-numeric:tabular-nums}.shell{max-width:1740px;margin:auto;padding:24px 28px 30px}.eyebrow{font-size:10px;letter-spacing:2.2px;color:var(--muted);font-weight:700;text-transform:uppercase}.header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:20px}.title-row{display:flex;align-items:center;gap:13px;margin-top:7px}h1{font-size:23px;margin:0;font-weight:700;letter-spacing:-.6px}h2{font-size:15px;letter-spacing:-.1px;margin:0}.header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #d9e2ee;border-radius:6px;padding:6px 9px;font-size:11px;font-weight:700;letter-spacing:.5px;white-space:nowrap}.pill.live{color:#116947;background:#eaf6ef;border-color:#d4eadd}.pill.replay{color:#82581c;background:#fff5df;border-color:#eeddb7}.pill.demo{color:#7e438c;background:#f8eefb;border-color:#e9d7ed}.pill.offline{color:var(--red);background:#fff1f3;border-color:#f1d5d9}.dot{width:6px;height:6px;border-radius:50%;background:currentColor}.connection{font-size:12px;color:var(--muted)}.primary{background:var(--blue);color:white;border-color:var(--blue)}.primary:hover:not(:disabled){background:#1c50b9}.danger{color:#ac3748;border-color:#e8cdd2}.danger:hover:not(:disabled){background:#fff0f2}.statusbar{display:grid;grid-template-columns:1fr .85fr .8fr 1fr 1.2fr;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin-bottom:18px}.stat{padding:15px 20px;min-width:0;position:relative}.stat+.stat:before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:1px;background:var(--line)}.stat-label{font-size:11px;color:var(--muted);margin-bottom:7px}.stat-value{font-size:18px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stat-value.small{font-size:13px;padding-top:4px}.stat-sub{margin-top:5px;color:var(--muted);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}.card-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.subhead{font-size:11px;color:var(--muted);margin-top:5px}.plot-actions{display:flex;align-items:center;gap:8px}.mini{padding:6px 9px;font-size:11px}.plot-wrap{position:relative;height:clamp(430px,51vw,650px);background:#fff}.plot-wrap svg{display:block;width:100%;height:100%}.plot-note{position:absolute;left:20px;top:15px;font-size:11px;color:var(--muted);background:#ffffffdd;border:1px solid #e7edf5;padding:7px 9px;border-radius:6px;pointer-events:none;max-width:calc(100% - 40px)}.plot-legend{display:flex;align-items:center;flex-wrap:wrap;gap:18px;padding:13px 20px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}.legend-item{display:inline-flex;align-items:center;gap:7px}.swatch{width:19px;height:3px;display:inline-block;border-radius:2px}.legend-check{display:inline-flex;align-items:center;gap:7px;font-size:11px;cursor:pointer}.legend-check input{width:13px;height:13px;margin:0;accent-color:var(--amber)}.legend-triangle{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--purple)}.legend-diamond{width:7px;height:7px;border:1.5px solid #34455b;transform:rotate(45deg)}.legend-dash{width:20px;border-top:2px dashed #abb8c8}.solution-row{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}.solution{padding:16px 20px;min-width:0}.solution+.solution{border-left:1px solid var(--line)}.solution-title{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px}.solution-pos{font-size:21px;letter-spacing:-.5px;margin:9px 0 7px;font-variant-numeric:tabular-nums;font-weight:600}.solution-meta{font-size:11px;color:var(--muted);line-height:1.6}.solution.valid .solution-pos{color:var(--blue)}.solution.corrected.valid .solution-pos{color:var(--amber)}.below{margin-top:18px}.link-table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}.link-table th{text-align:right;color:var(--muted);font-size:10px;font-weight:500;background:#fafbfd;padding:11px 15px;border-bottom:1px solid var(--line)}.link-table td{text-align:right;padding:11px 15px;border-bottom:1px solid #eef2f7}.link-table th:first-child,.link-table td:first-child{text-align:left;padding-left:20px}.link-table tr:last-child td{border-bottom:0}.link-id{font-weight:650}.good{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}.tiny-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:2px}.side{display:grid;gap:18px}.panel-body{padding:18px 20px}.field{display:grid;gap:7px;margin-bottom:14px}.field:last-child{margin-bottom:0}.help{font-size:11px;color:var(--muted);line-height:1.7}.mark-button{width:100%;padding:17px 14px;font-size:17px;margin:1px 0 11px;border-radius:9px;box-shadow:0 3px 10px #2963d422;display:flex;align-items:center;justify-content:center;gap:10px}.key{font-size:10px;line-height:17px;min-width:19px;text-align:center;display:inline-block;padding:0 4px;border:1px solid #ffffff88;border-radius:4px;color:inherit;font-family:ui-monospace,Consolas,monospace}.next-coord{font-size:11px;color:var(--muted);margin-top:-4px;margin-bottom:13px;font-variant-numeric:tabular-nums}.last-mark{border-top:1px solid var(--line);padding:14px 20px;background:#fafcfe;font-size:11px;line-height:1.7;color:var(--muted)}.last-mark strong{font-size:12px;color:var(--ink);font-weight:600}.row{display:flex;align-items:center;gap:8px}.route-top{display:flex;align-items:center;justify-content:space-between}.locked{font-size:10px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:3px 6px}.save-route{width:100%;margin-top:12px}.route-state{min-height:18px;margin-top:8px;font-size:11px;color:var(--muted);line-height:1.5}.route-state.bad{color:var(--red)}.marks{max-height:252px;overflow:auto}.empty{font-size:12px;color:#8792a4;line-height:1.7;padding:22px 20px;text-align:center}.mark-item{display:flex;align-items:flex-start;gap:12px;padding:12px 20px;border-bottom:1px solid #edf1f6}.mark-item:last-child{border-bottom:0}.mark-seq{background:#f1f5fa;border:1px solid #e0e7f0;flex:none;min-width:25px;height:25px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#65768d;font-variant-numeric:tabular-nums}.mark-title{font-size:12px;font-weight:600;line-height:1.2}.mark-coord{font-size:10px;color:var(--muted);margin-top:5px}.mark-time{font-size:10px;color:var(--muted);margin-left:auto;white-space:nowrap;padding-top:2px;font-variant-numeric:tabular-nums}.marks-count{font-size:11px;color:var(--muted);font-weight:500}.footer{font-size:10px;color:var(--muted);margin-top:18px;line-height:1.8;display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}.session-path{word-break:break-all}.pathbox{padding:12px 20px;background:#fafcfe;border-top:1px solid var(--line);font-size:10px;line-height:1.7;color:var(--muted)}.pathbox strong{font-weight:500;color:#516077}.banner{border:1px solid #eed5a0;background:#fff9ec;color:#856124;padding:11px 15px;border-radius:9px;margin-bottom:16px;font-size:12px;line-height:1.6}.banner.error{border-color:#efd2d8;background:#fff2f4;color:#a23446}.banner[hidden]{display:none}.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);padding:12px 20px;max-width:min(90vw,680px);border-radius:9px;background:#23334a;color:white;font-size:13px;line-height:1.5;box-shadow:0 8px 30px #0a1b3130;z-index:10;pointer-events:none}.toast.error{background:#9f3042}.toast[hidden]{display:none}.detail-toggle{font-size:11px;padding:0;border:0;background:transparent;color:var(--blue)}.record-dot{width:7px;height:7px;border-radius:50%;display:inline-block;background:var(--red);box-shadow:0 0 0 3px #be38491b;margin-right:7px}.muted{color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(min-width:1500px){.layout{grid-template-columns:minmax(0,1fr) 370px}.plot-wrap{height:650px}}
+@media(max-width:1000px){.shell{padding:20px}.layout{grid-template-columns:minmax(0,1fr) 305px;gap:14px}.card-head,.panel-body{padding:16px}.stat{padding:14px}.plot-wrap{height:470px}.plot-actions{gap:4px}.plot-actions button{padding:6px}.stat-value{font-size:16px}}
+@media(max-width:780px){.shell{padding:16px 12px}.header{align-items:flex-start;margin-bottom:16px}h1{font-size:19px}.header-right{max-width:180px;gap:7px}.header-right button{font-size:11px;padding:9px}.statusbar{grid-template-columns:repeat(3,1fr)}.stat{padding:12px}.stat:nth-child(4),.stat:nth-child(5){border-top:1px solid var(--line)}.stat:nth-child(4):before{display:none}.stat:nth-child(5){grid-column:2/4}.stat-value{font-size:15px}.stat-value.small{font-size:11px}.layout{grid-template-columns:1fr}.side{grid-template-columns:1fr 1fr}.side .mark-panel{grid-column:1/3;grid-row:1}.side .marks-panel{grid-column:1/3}.plot-wrap{height:430px}.plot-actions{display:none}.link-table th,.link-table td{padding:10px 8px;font-size:11px}.mark-panel .panel-body{display:grid;grid-template-columns:1fr 1fr;column-gap:18px;align-items:start}.mark-panel .field{margin:0}.mark-button{grid-column:2;grid-row:1/3;margin:0}.mark-panel .help{grid-column:1/3;margin-top:10px}.mark-panel .next-coord{grid-column:1;margin-top:8px;margin-bottom:0}.side .route-panel{grid-column:1/3}.solution{padding:14px}.solution-pos{font-size:18px}.solution-meta{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.solution.automatic.valid .solution-pos{color:var(--green)}.solution.paired.valid .solution-pos{color:#537b91}.solution[hidden],.legend-check[hidden]{display:none}.solution-row.has-extra{grid-template-columns:repeat(2,minmax(0,1fr))}.solution-row.has-extra .solution:nth-child(n+3){border-top:1px solid var(--line)}.automatic-note{padding:11px 20px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.7;overflow-wrap:anywhere}.table-scroll{overflow-x:auto}.link-table{min-width:780px}.link-detail{display:block;font-size:10px;font-weight:400;color:var(--muted);margin-top:4px;white-space:nowrap}.automatic-check input{accent-color:var(--green)}
+.solution.guarded.valid .solution-pos{color:#08656f}.guarded-note{background:#f3f9f9;border-left:3px solid #08656f}.link-table{min-width:1050px}.guarded-column{background:#f6fbfb}
+</style>
+</head>
+<body>
+<main class="shell">
+  <header class="header">
+    <div><div class="eyebrow">Wi-PRO · Field console</div><div class="title-row"><h1>实时轨迹与定点标记</h1><span id="mode" class="pill offline"><span class="dot"></span><span id="modeText">连接中</span></span></div></div>
+    <div class="header-right"><span class="connection" id="connection">正在连接本地服务</span><button class="primary" id="startBtn" disabled>开始采集</button><button class="danger" id="stopBtn" disabled>停止采集并保存</button></div>
+  </header>
+  <div id="banner" class="banner" role="status" hidden></div>
+  <section class="statusbar" aria-label="采集状态">
+    <div class="stat"><div class="stat-label">移动节点 / 串口</div><div class="stat-value" id="device">A0 · —</div><div class="stat-sub mono" id="identity">等待硬件身份</div></div>
+    <div class="stat"><div class="stat-label">采集时长</div><div class="stat-value mono" id="elapsed">00:00</div><div class="stat-sub" id="phase">等待服务</div></div>
+    <div class="stat"><div class="stat-label">最近数据</div><div class="stat-value mono" id="age">—</div><div class="stat-sub" id="freshness">尚无数据</div></div>
+    <div class="stat"><div class="stat-label">已收测距 / CSI</div><div class="stat-value mono" id="counts">0 / 0</div><div class="stat-sub" id="dropped">以保存的原始记录为准</div></div>
+    <div class="stat"><div class="stat-label">参考点标记</div><div class="stat-value" id="markStat">0 个</div><div class="stat-sub" id="markStatSub">人工标记独立保存</div></div>
+  </section>
+  <div class="layout">
+    <div>
+      <section class="card" aria-label="实时二维轨迹">
+        <div class="card-head"><div><h2>平面轨迹 <span class="muted" style="font-weight:400;font-size:12px">XY · m</span></h2><div class="subhead">等比例坐标轴 · 手动标记不会修正或吸附轨迹</div></div><div class="plot-actions"><button class="mini" id="zoomIn" aria-label="放大轨迹">＋</button><button class="mini" id="zoomOut" aria-label="缩小轨迹">－</button><button class="mini" id="fitBtn">适应全部</button></div></div>
+        <div class="plot-wrap" id="plotWrap"><svg id="plot" role="img" aria-label="六锚点、计划路线与实时估计轨迹"></svg><div class="plot-note" id="plotNote">等待本地服务提供锚点与测距…</div></div>
+        <div class="plot-legend"><span class="legend-item"><span class="swatch" style="background:var(--blue)"></span>纯 Wi-PRO</span><span class="legend-item"><span class="swatch" style="background:#08656f"></span>时龄与几何保护修正</span><label class="legend-check automatic-check"><input type="checkbox" id="showAutomatic"><span class="swatch" style="background:var(--green)"></span>冻结自动分支对照</label><label class="legend-check"><input type="checkbox" id="showCorrected"><span class="swatch" style="background:var(--amber)"></span>旧固定 offset 对照</label><label class="legend-check" id="pairedLegend" hidden><input type="checkbox" id="showAutomaticPaired"><span class="legend-dash" style="border-color:#537b91"></span>同事件原生对照</label><span class="legend-item"><span class="legend-triangle"></span>固定锚点</span><span class="legend-item"><span class="legend-dash"></span>计划路线</span><span class="legend-item"><span class="legend-diamond"></span>人工 MARK</span></div>
+        <div class="solution-row" id="solutionRow"><div class="solution" id="wiproBox"><div class="solution-title"><span class="swatch" style="background:var(--blue)"></span>纯 Wi-PRO 位置估计</div><div class="solution-pos mono" id="wiproPos">— , —</div><div class="solution-meta" id="wiproMeta">等待足够的新鲜有效测距</div></div><div class="solution guarded" id="guardedBox"><div class="solution-title"><span class="swatch" style="background:#08656f"></span>时龄与几何保护修正</div><div class="solution-pos mono" id="guardedPos">— , —</div><div class="solution-meta" id="guardedMeta">等待保护定位器与完整测量事件</div></div><div class="solution automatic" id="automaticBox" hidden><div class="solution-title"><span class="swatch" style="background:var(--green)"></span>冻结自动分支对照</div><div class="solution-pos mono" id="automaticPos">— , —</div><div class="solution-meta" id="automaticMeta">等待自动分支模型与完整测量事件</div></div><div class="solution corrected" id="correctedBox" hidden><div class="solution-title"><span class="swatch" style="background:var(--amber)"></span>旧固定 offset 对照</div><div class="solution-pos mono" id="correctedPos">— , —</div><div class="solution-meta" id="correctedMeta">等待服务提供修正常数</div></div><div class="solution paired" id="automaticPairedBox" hidden><div class="solution-title"><span class="legend-dash" style="border-color:#537b91"></span>同事件原生对照</div><div class="solution-pos mono" id="automaticPairedPos">— , —</div><div class="solution-meta" id="automaticPairedMeta">使用与自动分支相同的已完成事件</div></div></div>
+        <div class="automatic-note guarded-note" id="guardedStatus">等待时龄与几何保护定位器。保护机制用于抑制异常输入，不代表已验证定位精度。</div>
+        <div class="automatic-note" id="automaticStatus">自动分支等待模型状态。分支依据测量特征选择，路由得分不是 LOS 概率。残差 RMS 表示测距与位置解的一致程度，不能视为定位误差。</div>
+        <div class="pathbox"><strong>保存位置</strong> <span class="session-path mono" id="sessionPath">尚未开始采集</span></div>
+      </section>
+      <section class="card below"><div class="card-head"><div><h2>链路状态</h2><div class="subhead">保护距离与权重由定位器提供；原始与修正记录均保留。自动距离为窗口中位数，最近分支属于最新完整事件</div></div><span class="marks-count" id="linkSummary">0 / 6 可用</span></div><div class="table-scroll"><table class="link-table"><thead><tr><th>锚点</th><th>Wi-PRO / m</th><th>原始 / m</th><th>原生年龄</th><th>样本数</th><th>原生使用</th><th class="guarded-column">保护输入 / m</th><th class="guarded-column">权重 · 输入年龄 · 处理原因</th><th>自动修正 / m</th><th>最近分支 · 自动年龄</th></tr></thead><tbody id="linksBody"></tbody></table></div></section>
+    </div>
+    <aside class="side">
+      <section class="card mark-panel"><div class="card-head"><div><h2>到点标记</h2><div class="subhead">在实测定点停稳后按下 MARK</div></div><span class="pill" style="font-size:9px">人工参考</span></div><div class="panel-body"><div class="field"><label for="nextWaypoint">下一个定点</label><select id="nextWaypoint" disabled><option value="">先保存路线</option></select></div><div class="next-coord mono" id="nextCoord">—</div><button id="markBtn" class="primary mark-button" disabled><span>到点 MARK</span><span class="key">M</span></button><div class="help">按键或点击均记录到达时间与所选定点坐标。标记后自动选择下一点；最后一点结束后仍可手动选择。</div></div><div class="last-mark" id="lastMark">尚无标记。人工标记仅代表该时刻到达定点，不能作为两点之间的连续真实路径。</div></section>
+      <section class="card route-panel"><div class="card-head"><div><h2>计划路线与高度</h2><div class="subhead">使用原坐标系中独立测量的坐标</div></div><span id="routeLock" class="locked">未锁定</span></div><div class="panel-body"><div class="field"><label for="tagHeight">A0 天线高度 / m</label><div class="row"><input id="tagHeight" type="number" min="0" step="0.01" inputmode="decimal" placeholder="天线离地高度" disabled><button id="saveHeight" style="flex:none" disabled>保存高度</button></div><div class="help">这是后续新采集使用的固定高度假设；保存数值不代表量具实测已核验，也不修改历史采集。</div><div id="heightState" class="route-state" role="status">等待服务提供当前高度</div></div><div class="field"><label for="routeName">路线名称</label><input id="routeName" placeholder="例如：室内—走廊往返" maxlength="160"></div><div class="field"><label for="routeEditor">每行：定点编号, x, y（米）</label><textarea id="routeEditor" rows="5" spellcheck="false" placeholder="P1, x, y&#10;P2, x, y&#10;P3, x, y"></textarea></div><div class="help">可重复经过同一坐标，但定点编号应唯一。采集开始后计划锁定，修改内容不会应用于当前采集。</div><button id="saveRoute" class="save-route" disabled>保存路线计划</button><div id="routeState" class="route-state" role="status">等待服务</div></div></section>
+      <section class="card marks-panel"><div class="card-head"><h2>标记记录</h2><span class="marks-count" id="marksCount">0 次</span></div><div class="marks" id="marksList"><div class="empty">到达定点后按 M<br>这里会显示每次标记</div></div></section>
+    </aside>
+  </div>
+  <footer class="footer"><span id="sourceNote">实时位置是测距推算结果；路线与 MARK 是独立的人工参考。</span><span id="heightNote">A0 高度：—</span></footer>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+<script>
+"use strict";
+(() => {
+  const $ = id => document.getElementById(id);
+  const ns = "http://www.w3.org/2000/svg";
+  let state = null, online = false, pollBusy = false, actionBusy = false, markBusy = false;
+  let routeDirty = false, routeHydrated = false, lastRouteSignature = "", lastMarkSignature = "", lastWaypointSignature = "";
+  let waypointManual=false, waypointContext="", waypointMarksSignature="";
+  let heightDirty=false, heightHydrated=false;
+  let toastTimer, zoom = 1, lastFetchAt = 0;
+  const pending = {mark:null};
+  let apiToken=window.ROUTE_API_TOKEN||null;
+  const finite = v => typeof v === "number" && Number.isFinite(v);
+  const fmt = (v, digits=2) => finite(v) ? v.toFixed(digits) : "—";
+  const number = v => finite(v) ? v : 0;
+  const text = (id, v) => { $(id).textContent = String(v ?? "—"); };
+  const elapsed = v => { const s = Math.max(0,Math.floor(number(v))); return (s >= 3600 ? String(Math.floor(s/3600)).padStart(2,"0")+":" : "")+String(Math.floor(s/60)%60).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); };
+  const utcTime = v => { if(!v) return "—"; const d = new Date(v); if(!Number.isFinite(+d)) return String(v); return d.toLocaleTimeString("zh-CN",{hour12:false,hour:"2-digit",minute:"2-digit",second:"2-digit"}); };
+  const phaseName = v => ({preview:"预览 · 尚未保存采集",recording:"采集中",capturing:"采集中",running:"采集中",stopped:"已停止并保存",complete:"已完成",completed:"已完成",starting:"启动中",stopping:"停止并保存中",error:"采集异常",idle:"待机",replay:"回放中",paused:"已暂停",ready:"待开始 · 串口尚未打开"}[String(v || "").toLowerCase()] || v || "等待服务");
+  const isRecording = () => ["recording","capturing","running"].includes(String(state?.phase).toLowerCase());
+  const isTransition = () => ["starting","stopping"].includes(String(state?.phase).toLowerCase());
+  const freshnessLimit = () => finite(state?.parameters?.max_age_s)&&state.parameters.max_age_s>0?state.parameters.max_age_s:4;
+  const canEditHeight = () => !state?.route?.locked&&["ready","stopped","error"].includes(String(state?.phase).toLowerCase());
+  function notify(message, error=false) { text("toast",message); $("toast").className="toast"+(error?" error":""); $("toast").hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(() => {$("toast").hidden=true;}, error?6500:3500); }
+  async function request(path, body) {
+    if(body!==undefined&&!apiToken){const tokenResponse=await fetch("/api/token",{cache:"no-store"});if(!tokenResponse.ok)throw new Error("无法获取本地操作令牌，请刷新页面");const tokenData=await tokenResponse.json();apiToken=tokenData.token;if(!apiToken)throw new Error("本地操作令牌无效，请刷新页面");}
+    const response = await fetch(path,{method:body===undefined?"GET":"POST",headers:body===undefined?{}:{"Content-Type":"application/json","X-Route-Token":apiToken},body:body===undefined?undefined:JSON.stringify(body),cache:"no-store"});
+    let data; try { data=await response.json(); } catch { throw new Error("服务返回了无法读取的内容（HTTP "+response.status+"）"); }
+    if(!response.ok || data?.error && !data?.mode) { const e=new Error(data?.error || "请求失败（HTTP "+response.status+"）"); e.status=response.status; throw e; }
+    return data;
+  }
+  function updateButtons() {
+    const busy=actionBusy||markBusy, mode=String(state?.mode||"").toUpperCase();
+    $("startBtn").disabled=!online||busy||isRecording()||isTransition()||mode==="REPLAY";
+    $("stopBtn").disabled=!online||busy||!["starting","recording","capturing","running"].includes(String(state?.phase).toLowerCase());
+    $("markBtn").disabled=!online||busy||!isRecording()||!$("nextWaypoint").value;
+    $("markBtn").firstElementChild.textContent=markBusy?"正在记录…":"到点 MARK";
+    $("nextWaypoint").disabled=!online||markBusy||!(state?.route?.waypoints?.length);
+    $("saveRoute").disabled=!online||busy||Boolean(state?.route?.locked);
+    $("tagHeight").disabled=!online||busy||!canEditHeight();
+    $("saveHeight").disabled=!online||busy||!canEditHeight();
+  }
+  function renderTop() {
+    if(!state) return;
+    const mode=String(state.mode||"UNKNOWN").toUpperCase();
+    $("mode").className="pill "+(!online?"offline":mode==="LIVE"?"live":mode==="REPLAY"?"replay":mode==="DEMO"?"demo":"");
+    text("modeText",!online?"离线":mode); text("connection",!online?"本地服务连接中断":isRecording()?"正在记录原始数据":mode==="REPLAY"?"文件回放":mode==="DEMO"?"演示数据 · 非现场采集":"本地服务已连接");
+    text("device","A0 · "+(state.port||"—"));
+    const identity=typeof state.identity==="string"?state.identity:state.identity?.base_mac||state.identity?.mac||state.identity?.ap_mac||"等待硬件身份";
+    text("identity",identity); $("identity").title=String(identity);
+    text("elapsed",elapsed(state.elapsed_s)); text("phase",phaseName(state.phase));
+    const age=state.latest_age_s; text("age",finite(age)?age.toFixed(1)+" s":"—");
+    text("freshness",!online?"显示上次收到的状态":!finite(age)?"等待首条数据":age>freshnessLimit()?"数据已过期":"持续接收中");
+    $("age").className="stat-value mono"+(!online||finite(age)&&age>freshnessLimit()?" warn":"");
+    text("counts",number(state.counts?.range).toLocaleString()+" / "+number(state.counts?.csi).toLocaleString());
+    text("dropped", "FTM "+number(state.counts?.ftm).toLocaleString()+" · 丢弃 "+number(state.counts?.dropped).toLocaleString());
+    const marks=(state.marks||[]).filter(m=>!m.undone); text("markStat",marks.length+" 个");
+    const last=marks[marks.length-1]; text("markStatSub",last?"最近："+last.waypoint_id+" · "+elapsed(last.t_s):"人工标记独立保存");
+    text("sessionPath",state.session_dir||"尚未开始采集");
+    const recordedHeight=state.recorded_tag_height_m,configuredHeight=state.tag_height_m;
+    const heightLabel=finite(recordedHeight)&&finite(configuredHeight)&&Math.abs(recordedHeight-configuredHeight)>1e-9?"当前轨迹按 "+fmt(recordedHeight)+" m 解算；下组高度 "+fmt(configuredHeight)+" m（记录假设）":"A0 记录高度假设："+fmt(configuredHeight)+" m";
+    const guardConfig=state.guarded?.config||{},guardRetention=finite(guardConfig.min_stale_cap_s)&&finite(guardConfig.max_stale_cap_s)?" · 保护方法按周期保留 "+fmt(guardConfig.min_stale_cap_s,1)+"–"+fmt(guardConfig.max_stale_cap_s,1)+" s 并降权":"";
+    text("heightNote",heightLabel+" · 测距窗口 "+fmt(state.parameters?.range_window_s,1)+" s · 原生/冻结对照时限 "+fmt(state.parameters?.max_age_s,1)+" s"+guardRetention);
+    text("sourceNote",state.source_note||"实时位置是测距推算结果；路线与 MARK 是独立的人工参考。");
+    const err=state.error; let banner="", error=false;
+    if(!online){banner="本地服务连接已中断。当前画面为上次收到的状态；请先恢复连接再操作。";error=true;}
+    else if(err){banner=String(err);error=true;}
+    else if(mode==="DEMO")banner="当前是 DEMO 演示模式。轨迹不代表真实采集结果，请勿用于论文精度评估。";
+    else if(mode==="REPLAY")banner="当前是 REPLAY 文件回放。画面用于查看历史测距与轨迹。";
+    else if(finite(age)&&age>freshnessLimit())banner="已超过 "+age.toFixed(1)+" 秒未收到新测距。轨迹上的末点可能已过期，请检查 A0 与锚点供电。";
+    else if(state.stop_ack===false&&["stopped","complete","completed"].includes(String(state.phase).toLowerCase())){banner="数据已保存，但未收到硬件停止输出确认；请检查服务日志。";error=true;}
+    text("banner",banner); $("banner").hidden=!banner; $("banner").className="banner"+(error?" error":"");
+  }
+  function renderRoute() {
+    const route=state.route||{}, points=route.waypoints||[], signature=JSON.stringify({name:route.name,points});
+    if(!routeHydrated || (!routeDirty && signature!==lastRouteSignature)){
+      $("routeName").value=route.name||""; $("routeEditor").value=points.map(p=>[p.id,p.x,p.y].join(", ")).join("\n"); routeHydrated=true; lastRouteSignature=signature;
+    }
+    text("routeLock",route.locked?"采集中已锁定":"可编辑");
+    $("routeName").readOnly=Boolean(route.locked); $("routeEditor").readOnly=Boolean(route.locked);
+    if(!$("routeState").classList.contains("bad")) text("routeState",route.locked?"当前路线已锁定。定点标记只记录参考，不影响位置估计。":routeDirty?"有未保存的修改。":points.length?"已保存 "+points.length+" 个定点。":"路线留空；填写实测坐标后保存。");
+    const wpSignature=JSON.stringify(points.map(p=>[p.id,p.x,p.y]));
+    if(wpSignature!==lastWaypointSignature){
+      const selected=$("nextWaypoint").value, select=$("nextWaypoint"); select.replaceChildren();
+      if(!points.length){const option=document.createElement("option");option.value="";option.textContent="先保存路线";select.append(option);}
+      else {for(const p of points){const option=document.createElement("option");option.value=String(p.id);option.textContent=String(p.id)+"  ·  ("+fmt(p.x)+", "+fmt(p.y)+")";select.append(option);}if(points.some(p=>String(p.id)===selected))select.value=selected;}
+      lastWaypointSignature=wpSignature;
+    }
+    syncWaypointSelection(points);
+    renderNext();
+  }
+  function syncWaypointSelection(points){
+    const context=JSON.stringify([state?.session_dir||null,points.map(p=>[p.id,p.x,p.y])]);
+    if(context!==waypointContext){waypointManual=false;waypointMarksSignature="";waypointContext=context;}
+    const marks=(state?.marks||[]).filter(m=>!m.undone),signature=JSON.stringify(marks.map(m=>[m.seq,m.waypoint_id,m.client_event_id,m.t_s]));
+    if(signature!==waypointMarksSignature){
+      if(!waypointManual&&points.length){
+        const last=marks[marks.length-1],index=last?points.findIndex(p=>String(p.id)===String(last.waypoint_id)):-1;
+        $("nextWaypoint").value=String(points[Math.min(index+1,points.length-1)].id);
+      }
+      waypointMarksSignature=signature;
+    }
+  }
+  function renderHeight(){
+    if(!heightHydrated||!heightDirty){const value=finite(state?.tag_height_m)?String(state.tag_height_m):"";if($("tagHeight").value!==value)$("tagHeight").value=value;heightHydrated=true;}
+    if(!$("heightState").classList.contains("bad"))text("heightState",heightDirty?"高度有未保存的修改，开始采集前请先保存。":state?.route?.locked?"本组锁定高度："+fmt(state.tag_height_m)+" m。":"已记录高度假设："+fmt(state?.tag_height_m)+" m，将用于下一组定位。");
+  }
+  function renderNext(){const p=(state?.route?.waypoints||[]).find(p=>String(p.id)===$("nextWaypoint").value);text("nextCoord",p?"参考坐标 ("+fmt(p.x)+", "+fmt(p.y)+") m":"尚未选择定点");updateButtons();}
+  function renderSolutions(){
+    const pairedAvailable=Boolean(state.solutions?.automatic_native)||(state.trails?.automatic_native||[]).length>0;
+    $("pairedLegend").hidden=!pairedAvailable;
+    $("automaticBox").hidden=!$("showAutomatic").checked;
+    $("correctedBox").hidden=!$("showCorrected").checked;
+    $("automaticPairedBox").hidden=!pairedAvailable||!$("showAutomaticPaired").checked;
+    $("solutionRow").classList.toggle("has-extra",!$("automaticBox").hidden||!$("correctedBox").hidden||!$("automaticPairedBox").hidden);
+    for(const [type,prefix] of [["wipro","wipro"],["guarded","guarded"],["automatic","automatic"],["corrected","corrected"],["automatic_native","automaticPaired"]]){
+      const s=state.solutions?.[type],ok=Boolean(s?.ok)&&finite(s?.x)&&finite(s?.y);
+      $(prefix+"Box").classList.toggle("valid",ok);text(prefix+"Pos",ok?fmt(s.x)+" , "+fmt(s.y):"— , —");
+      let details=ok?number(s.anchors_n)+" 个锚点 · 残差 RMS "+fmt(s.residual_rms_m)+" m"+(finite(s.measurement_span_s)?" · 测距跨度 "+fmt(s.measurement_span_s,1)+" s":"")+(finite(s.age_s)?" · "+fmt(s.age_s,1)+" s 前":""):s?.reason||"等待足够的新鲜有效测距";
+      if(type==="corrected")details=(finite(state.candidate?.offset_m)?"测距减去 "+fmt(state.candidate.offset_m,3)+" m · ":"")+details;
+      if(type==="automatic_native")details="与自动分支使用同一批完整事件 · "+details;
+      text(prefix+"Meta",details);
+    }
+    const guarded=state.guarded||{},config=guarded.config||{};
+    let guardNote=guarded.enabled===true?"时龄与几何保护修正已启用":guarded.enabled===false?"时龄与几何保护修正未启用":guarded.name?"时龄与几何保护修正已配置":"时龄与几何保护修正等待服务状态";
+    if(guarded.status)guardNote+=" · "+String(guarded.status);
+    if(finite(config.max_age_s))guardNote+=" · 保护输入年龄上限 "+fmt(config.max_age_s,1)+" s";
+    if(finite(config.min_stale_cap_s)&&finite(config.max_stale_cap_s))guardNote+=" · 按周期保留 "+fmt(config.min_stale_cap_s,1)+"–"+fmt(config.max_stale_cap_s,1)+" s 并降权";
+    if(guarded.mode)guardNote+=" · "+String(guarded.mode);
+    text("guardedStatus",guardNote+"。链路权重是定位器的相对权重，不是 LOS 概率或精度保证。计划路线与 MARK 不用于吸附定位；效果仍需独立实测验证。");
+    const model=state.automatic||{},counts=model.counts||{};
+    let modelNote=!model.enabled?"自动分支未启用："+(model.status||"等待服务提供冻结模型"):"冻结自动分支 · "+(model.mode||"compact_hard")+(finite(model.low_offset_m)?" · 低偏差分支减去 "+fmt(model.low_offset_m,3)+" m":"");
+    if(model.enabled)modelNote+=" · 已配对 "+number(model.paired_events_n).toLocaleString()+" 个事件"+(model.status?" · "+String(model.status):"");
+    if(model.model_sha256)modelNote+=" · 模型 "+String(model.model_sha256).slice(0,12);
+    if(finite(counts.invalid_corrected))modelNote+=" · 无效修正 "+counts.invalid_corrected;
+    text("automaticStatus",modelNote+"。路由得分不是 LOS 概率；同事件原生对照用于匹配比较。残差 RMS 不是定位误差。冻结自动分支中的负修正距离保留记录并由该定位器排除，不会自动换回原生值。");
+    $("automaticStatus").title=model.model_sha256?"冻结模型 SHA-256："+model.model_sha256:"";
+  }
+  function automaticBranchLabel(link){
+    const branch=link.automatic_branch;
+    return branch==="offset"||branch==="los_offset"?"低偏差分支":branch==="specialized"?"专用分支":"等待特征";
+  }
+  function automaticStatusLabel(link){
+    if(finite(link.automatic_m)&&link.automatic_m<0)return "负值 · 不用于定位";
+    const status=String(link.automatic_status||"");
+    const labels={waiting:"等待完整事件",pending:"等待完整事件",waiting_range:"等待测距",waiting_ftm:"等待 FTM",waiting_csi:"等待 CSI",missing:"缺少特征",stale:"过期 · 不用于定位",negative:"负值 · 不用于定位",disabled:"未启用",error:"修正失败",invalid:"无效 · 不用于定位",ok:"",ready:""};
+    if(finite(link.automatic_age_s)&&link.automatic_age_s>freshnessLimit())return "过期 · 不用于定位";
+    return Object.hasOwn(labels,status)?labels[status]:status||(!finite(link.automatic_m)?"等待完整事件":"");
+  }
+  function guardedReasonLabel(link){
+    const labels={automatic:"采用自动修正",geometry_fallback:"几何检查后回退",invalid:"输入无效",excluded:"不参与定位",stale:"按保护规则过期",waiting:"等待保护输入",missing:"缺少保护输入",automatic_below_vertical_minimum_fallback:"修正值小于垂直距离，已回退",fallback_reduces_global_triangle_violation:"回退以减少几何冲突",unresolved_triangle_violation_downweighted:"剩余几何冲突，已降权",stale_paired_batch:"配对测量按保护规则过期",missing_paired_batch:"缺少配对测量",negative_automatic_range:"自动修正为负值",automatic_and_fallback_physically_invalid:"修正和回退均不满足物理约束",missing_or_nonfinite_automatic_range:"自动距离缺失或无效",automatic_and_offset_invalid_use_original_native:"修正与 offset 均无效，回退原生距离",original_native_reduces_global_triangle_violation:"原生回退以减少几何冲突",automatic_offset_and_native_physically_invalid:"修正及两种回退均无效"};
+    const values=Array.isArray(link.guarded_reason)?link.guarded_reason:String(link.guarded_reason||"").split(/;\s*/);
+    const result=values.filter(Boolean).map(value=>labels[String(value)]||String(value)).join(" · ");
+    return (link.guarded_valid===false?"未使用 · ":"")+(result||(link.guarded_valid===true?"采用自动修正":"等待保护定位器"));
+  }
+  function renderLinks(){
+    const links=state.links||[], body=$("linksBody");body.replaceChildren();
+    for(const link of links){const tr=document.createElement("tr");const valid=Boolean(link.valid_for_localisation);const values=[link.id,fmt(link.distance_m),fmt(link.raw_m),finite(link.age_s)?fmt(link.age_s,1)+" s":"—",number(link.samples_n).toLocaleString(),valid?"使用":"未使用",fmt(link.guarded_m),(finite(link.guarded_weight)?"权重 "+fmt(link.guarded_weight,3):"权重 —")+" · "+(finite(link.guarded_age_s)?fmt(link.guarded_age_s,1)+" s":"年龄 —"),fmt(link.automatic_m),automaticBranchLabel(link)+(finite(link.automatic_age_s)?" · "+fmt(link.automatic_age_s,1)+" s":"")];
+      values.forEach((value,i)=>{const td=document.createElement("td");td.textContent=String(value);if(i===0)td.className="link-id";if(i===5)td.className=valid?"good":"muted";if(i===1&&finite(link.distance_m)&&link.distance_m<0)td.className="bad";if(i===3&&finite(link.age_s)&&link.age_s>freshnessLimit())td.className="warn";if(i===6||i===7)td.className="guarded-column";if(i===6&&finite(link.guarded_m)&&link.guarded_m<0)td.className+=" bad";if(i===7){const note=document.createElement("span");note.className="link-detail";note.textContent=guardedReasonLabel(link);td.append(note);td.title="服务提供的保护输入时龄与相对定位权重，不表示分类置信度；原始原因："+(Array.isArray(link.guarded_reason)?link.guarded_reason.join(" · "):link.guarded_reason||"—");}if(i===8&&finite(link.automatic_m)&&link.automatic_m<0)td.className="bad";if(i===9){const status=automaticStatusLabel(link);if(status){const note=document.createElement("span");note.className="link-detail";note.textContent=status;td.append(note);}if(finite(link.automatic_probability))td.title="高偏差分支路由得分："+fmt(link.automatic_probability,3)+"；不是 LOS 概率";if(finite(link.automatic_age_s)&&link.automatic_age_s>freshnessLimit())td.className="warn";}tr.append(td);});body.append(tr);}
+    if(!links.length){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=10;td.textContent="等待测距数据";td.style.textAlign="center";td.style.color="#8792a4";tr.append(td);body.append(tr);}
+    const nativeCount=links.filter(l=>l.valid_for_localisation).length,guardedCount=state.solutions?.guarded?.ok?number(state.solutions.guarded.anchors_n):0;
+    text("linkSummary","新鲜原生 "+nativeCount+" · 保护解 "+guardedCount+" / "+(state.anchors?.length||6)+" 锚点");
+  }
+  function renderMarks(){
+    const marks=(state.marks||[]).filter(m=>!m.undone), sig=JSON.stringify(marks);if(sig===lastMarkSignature)return;lastMarkSignature=sig;text("marksCount",marks.length+" 次");const list=$("marksList");list.replaceChildren();
+    if(!marks.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="到达定点后按 M，这里会显示每次标记。";list.append(empty);text("lastMark","尚无标记。人工标记仅代表该时刻到达定点，不能作为两点之间的连续真实路径。");return;}
+    for(const m of [...marks].reverse()){const row=document.createElement("div");row.className="mark-item";const seq=document.createElement("div");seq.className="mark-seq";seq.textContent=String(m.seq);const detail=document.createElement("div");const title=document.createElement("div");title.className="mark-title";title.textContent=String(m.waypoint_id);const coord=document.createElement("div");coord.className="mark-coord mono";coord.textContent="("+fmt(m.x)+", "+fmt(m.y)+") m";detail.append(title,coord);const time=document.createElement("div");time.className="mark-time mono";time.textContent=elapsed(m.t_s);time.title=String(m.utc||"");row.append(seq,detail,time);list.append(row);}
+    const m=marks[marks.length-1];$("lastMark").replaceChildren();const strong=document.createElement("strong");strong.textContent="已记录 "+m.waypoint_id+" · "+elapsed(m.t_s);const br=document.createElement("br");$("lastMark").append(strong,br,document.createTextNode("("+fmt(m.x)+", "+fmt(m.y)+") m · "+utcTime(m.utc)));
+  }
+  function svg(tag,attrs={},content){const el=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))el.setAttribute(k,String(v));if(content!==undefined)el.textContent=String(content);return el;}
+  function tickStep(span,target=7){const raw=span/target, power=Math.pow(10,Math.floor(Math.log10(raw||1))), part=raw/power;return(part<=1?1:part<=2?2:part<=5?5:10)*power;}
+  function renderPlot(){
+    const node=$("plot"),wrap=$("plotWrap"),w=Math.max(300,wrap.clientWidth),h=Math.max(300,wrap.clientHeight);node.setAttribute("viewBox",`0 0 ${w} ${h}`);node.replaceChildren();
+    const anchors=(state?.anchors||[]).filter(p=>finite(p.x)&&finite(p.y)),waypoints=(state?.route?.waypoints||[]).filter(p=>finite(p.x)&&finite(p.y)),marks=(state?.marks||[]).filter(p=>!p.undone&&finite(p.x)&&finite(p.y)),wipro=(state?.trails?.wipro||[]).filter(p=>finite(p.x)&&finite(p.y)),guarded=(state?.trails?.guarded||[]).filter(p=>finite(p.x)&&finite(p.y)),automatic=$("showAutomatic").checked?(state?.trails?.automatic||[]).filter(p=>finite(p.x)&&finite(p.y)):[],corrected=$("showCorrected").checked?(state?.trails?.corrected||[]).filter(p=>finite(p.x)&&finite(p.y)):[],paired=$("showAutomaticPaired").checked?(state?.trails?.automatic_native||[]).filter(p=>finite(p.x)&&finite(p.y)):[];
+    const all=[...anchors,...waypoints,...marks,...wipro,...guarded,...automatic,...corrected,...paired];let minx=0,maxx=10,miny=0,maxy=10;
+    if(all.length){minx=Infinity;maxx=-Infinity;miny=Infinity;maxy=-Infinity;for(const p of all){minx=Math.min(minx,p.x);maxx=Math.max(maxx,p.x);miny=Math.min(miny,p.y);maxy=Math.max(maxy,p.y);}}
+    const pad={l:58,r:28,t:52,b:48},pw=w-pad.l-pad.r,ph=h-pad.t-pad.b,cx=(minx+maxx)/2,cy=(miny+maxy)/2;
+    let sx=Math.max(4,maxx-minx)*1.2,sy=Math.max(4,maxy-miny)*1.3;const scale=Math.min(pw/sx,ph/sy)*zoom; sx=pw/scale;sy=ph/scale;minx=cx-sx/2;maxx=cx+sx/2;miny=cy-sy/2;maxy=cy+sy/2;
+    const X=x=>pad.l+(x-minx)*scale,Y=y=>h-pad.b-(y-miny)*scale;
+    const defs=svg("defs"),clip=svg("clipPath",{id:"plotClip"});clip.append(svg("rect",{x:pad.l,y:pad.t,width:pw,height:ph}));defs.append(clip);node.append(defs);
+    node.append(svg("rect",{x:pad.l,y:pad.t,width:pw,height:ph,fill:"#fcfdff",stroke:"#edf1f7"}));
+    const step=tickStep(Math.max(sx,sy),w>700?9:6),dec=step<1?Math.ceil(-Math.log10(step)):0;
+    for(let x=Math.ceil(minx/step)*step;x<=maxx+step*1e-6;x+=step){node.append(svg("line",{x1:X(x),y1:pad.t,x2:X(x),y2:h-pad.b,stroke:"#eaf0f7","stroke-width":1}));node.append(svg("text",{x:X(x),y:h-pad.b+20,fill:"#7c899c","font-size":10,"font-family":"ui-monospace,Consolas,monospace","text-anchor":"middle"},Math.abs(x)<step*.001?"0":x.toFixed(dec)));}
+    for(let y=Math.ceil(miny/step)*step;y<=maxy+step*1e-6;y+=step){node.append(svg("line",{x1:pad.l,y1:Y(y),x2:w-pad.r,y2:Y(y),stroke:"#eaf0f7","stroke-width":1}));node.append(svg("text",{x:pad.l-12,y:Y(y)+3,fill:"#7c899c","font-size":10,"font-family":"ui-monospace,Consolas,monospace","text-anchor":"end"},Math.abs(y)<step*.001?"0":y.toFixed(dec)));}
+    node.append(svg("text",{x:w-pad.r,y:h-10,fill:"#8a96a7","font-size":10,"text-anchor":"end"},"x / m"));node.append(svg("text",{x:14,y:pad.t-8,fill:"#8a96a7","font-size":10},"y / m"));
+    const map=svg("g",{"clip-path":"url(#plotClip)"});node.append(map);
+    if(waypoints.length>1)map.append(svg("polyline",{points:waypoints.map(p=>`${X(p.x)},${Y(p.y)}`).join(" "),fill:"none",stroke:"#aab8cc","stroke-width":1.5,"stroke-dasharray":"7 5","stroke-linejoin":"round"}));
+    for(const [type,points,color]of [["corrected",corrected,"#c68215"],["automatic_native",paired,"#537b91"],["wipro",wipro,"#2963d4"],["automatic",automatic,"#187655"],["guarded",guarded,"#08656f"]]){
+      if(points.length>1){let path="",previous=null;for(const p of points){const connected=previous&&finite(p.t)&&finite(previous.t)&&p.t>=previous.t&&p.t-previous.t<=2;path+=(connected?" L ":" M ")+X(p.x)+" "+Y(p.y);previous=p;}map.append(svg("path",{d:path,fill:"none",stroke:color,"stroke-width":type==="guarded"?2.7:2,"stroke-linejoin":"round","stroke-linecap":"round","stroke-dasharray":type==="automatic_native"?"5 4":"none",opacity:.72}));}
+      if(points.length){const p=points[points.length-1],current=online&&Boolean(state?.solutions?.[type]?.ok);if(current)map.append(svg("circle",{cx:X(p.x),cy:Y(p.y),r:10,fill:color,opacity:.12}));map.append(svg("circle",{cx:X(p.x),cy:Y(p.y),r:current?4.5:5,fill:current?color:"white",stroke:current?"white":color,"stroke-width":2,"stroke-dasharray":current?"none":"2 2"}));if(!current&&type==="wipro")map.append(svg("text",{x:X(p.x)+9,y:Y(p.y)+16,fill:"#718096","font-size":10,stroke:"white","stroke-width":3,"paint-order":"stroke"},"上次估计"));}
+    }
+    const label=(p,value,color,offset=15)=>{map.append(svg("text",{x:X(p.x)+offset,y:Y(p.y)-11,fill:color,"font-size":11,"font-weight":600,stroke:"#fff","stroke-width":3,"paint-order":"stroke"},value));};
+    for(const p of waypoints){const selected=String(p.id)===$("nextWaypoint").value;map.append(svg("circle",{cx:X(p.x),cy:Y(p.y),r:selected?7:4,fill:"white",stroke:selected?"#546985":"#b1bdce","stroke-width":selected?2:1.5}));label(p,String(p.id),"#74859b",10);}
+    for(const p of anchors){const x=X(p.x),y=Y(p.y),g=svg("g");g.append(svg("path",{d:`M ${x} ${y-7} L ${x+7} ${y+6} L ${x-7} ${y+6} Z`,fill:"#7d64aa",stroke:"white","stroke-width":1.7}));g.append(svg("title",{},String(p.id)+" · ("+fmt(p.x)+", "+fmt(p.y)+", "+fmt(p.z)+") m"));map.append(g);label(p,String(p.id),"#715794",11);}
+    for(const p of marks){const x=X(p.x),y=Y(p.y);map.append(svg("path",{d:`M ${x} ${y-6} L ${x+6} ${y} L ${x} ${y+6} L ${x-6} ${y} Z`,fill:"white",stroke:"#30425c","stroke-width":1.8}));}
+    let note=!online?"连接中断 · 画面保留上次状态":String(state?.phase).toLowerCase()==="ready"?"待开始 · 点击“开始采集”后接收现场数据":String(state?.phase).toLowerCase()==="stopped"?"采集已停止并保存 · 末点为历史估计":String(state?.phase).toLowerCase()==="starting"?"正在启动并核验 A0 身份…":!all.length?"等待本地服务提供锚点与测距…":!state?.solutions?.wipro?.ok&&!state?.solutions?.guarded?.ok?(wipro.length||guarded.length?"当前无法定位 · 仅保留历史轨迹":"锚点已就绪 · 等待足够的有效测距"):state?.solutions?.guarded?.ok&&!state?.solutions?.wipro?.ok?"保护定位器已出数 · 原生暂缺足够新鲜测距":!finite(state?.latest_age_s)?"等待新测距":state.latest_age_s>freshnessLimit()?"暂未收到新测距 · 各方法有效性见位置卡片":"实时位置估计 · 参考路线不会用于吸附";
+    if(String(state?.mode).toUpperCase()==="DEMO")note="DEMO 演示轨迹 · 非现场数据";if(String(state?.mode).toUpperCase()==="REPLAY")note="REPLAY 历史数据回放";text("plotNote",note);
+  }
+  function applyState(next){if(!next||typeof next!=="object")return;state=next;online=true;lastFetchAt=Date.now();renderTop();renderHeight();renderRoute();renderSolutions();renderLinks();renderMarks();renderPlot();updateButtons();}
+  async function poll(){if(pollBusy)return;pollBusy=true;try{applyState(await request("/api/state"));}catch(error){online=false;if(state){renderTop();renderPlot();}else{text("modeText","离线");text("connection","无法连接本地服务");text("banner","无法读取本地服务状态。请确认程序仍在运行，然后刷新页面。");$("banner").className="banner error";$("banner").hidden=false;}updateButtons();}finally{pollBusy=false;setTimeout(poll,500);}}
+  function parseRoute(){const points=[],seen=new Set();for(const [i,line]of $("routeEditor").value.split(/\r?\n/).entries()){const clean=line.trim();if(!clean)continue;const parts=clean.split(/[,，\s]+/).filter(Boolean);if(parts.length!==3)throw new Error("第 "+(i+1)+" 行应为：编号, x, y");const [id,xs,ys]=parts,x=Number(xs),y=Number(ys);if(!id||!Number.isFinite(x)||!Number.isFinite(y))throw new Error("第 "+(i+1)+" 行的编号或坐标无效");if(seen.has(id))throw new Error("定点编号重复："+id);seen.add(id);points.push({id,x,y});}return {name:$("routeName").value.trim(),waypoints:points};}
+  async function saveRoute(){if(actionBusy||!online||state?.route?.locked)return;let body;try{body=parseRoute();}catch(e){$("routeState").className="route-state bad";text("routeState",e.message);notify(e.message,true);return;}actionBusy=true;updateButtons();try{const result=await request("/api/route",body);routeDirty=false;$("routeState").className="route-state";if(result.mode)applyState(result);else await poll();notify("路线计划已保存："+body.waypoints.length+" 个定点");}catch(e){$("routeState").className="route-state bad";text("routeState",e.message);notify(e.message,true);}finally{actionBusy=false;updateButtons();}}
+  async function saveHeight(){if(actionBusy||!online||!canEditHeight())return;const value=$("tagHeight").value.trim(),height=Number(value);if(!value||!Number.isFinite(height)||height<0){$("heightState").className="route-state bad";text("heightState","请输入有限且不小于 0 的天线高度（米）。");notify("天线高度无效，请检查数值与单位。",true);return;}actionBusy=true;updateButtons();try{const result=await request("/api/settings",{tag_height_m:height});heightDirty=false;$("heightState").className="route-state";if(result.mode)applyState(result);else await poll();notify("后续采集的高度假设已保存："+height.toFixed(2)+" m");}catch(e){$("heightState").className="route-state bad";text("heightState",e.message);notify(e.message,true);}finally{actionBusy=false;updateButtons();}}
+  async function captureAction(path){if(actionBusy||!online)return;if(path==="/api/start"&&heightDirty){notify("高度编辑尚未保存。请先保存高度，再开始采集。",true);return;}if(path==="/api/start"&&routeDirty){notify("路线编辑尚未保存。请先保存计划，再开始采集。",true);return;}actionBusy=true;updateButtons();try{const result=await request(path,{});if(result.mode)applyState(result);else await poll();notify(path==="/api/start"?"采集已开始 · 路线与高度已锁定":"采集已停止，数据已保存");}catch(e){notify(e.message,true);}finally{actionBusy=false;updateButtons();}}
+  function eventId(){if(window.crypto?.randomUUID)return crypto.randomUUID();const b=new Uint8Array(16);if(window.crypto?.getRandomValues)crypto.getRandomValues(b);else for(let i=0;i<b.length;i++)b[i]=Math.floor(Math.random()*256);return Array.from(b,v=>v.toString(16).padStart(2,"0")).join("");}
+  async function mark(){if(markBusy||actionBusy||!online||!isRecording()||!$("nextWaypoint").value)return;const waypoint=$("nextWaypoint").value;markBusy=true;updateButtons();if(!pending.mark||pending.mark.waypoint_id!==waypoint)pending.mark={waypoint_id:waypoint,client_event_id:eventId(),client_unix_ms:Date.now()};let responseReceived=false;
+    try{const result=await request("/api/mark",pending.mark);responseReceived=true;pending.mark=null;waypointManual=false;const accepted=result.mark||result;notify("已标记 "+(accepted.waypoint_id||waypoint)+" · "+elapsed(accepted.t_s));const points=state?.route?.waypoints||[],index=points.findIndex(p=>String(p.id)===waypoint);if(index>=0&&index<points.length-1)$("nextWaypoint").value=String(points[index+1].id);await poll();renderNext();renderPlot();}
+    catch(e){if(e.status)pending.mark=null;notify(e.message+(responseReceived?"":"；若连接中断，重试同一定点将使用同一标记编号。"),true);}
+    finally{markBusy=false;updateButtons();}}
+  $("saveRoute").addEventListener("click",saveRoute);$("saveHeight").addEventListener("click",saveHeight);$("startBtn").addEventListener("click",()=>captureAction("/api/start"));$("stopBtn").addEventListener("click",()=>captureAction("/api/stop"));$("markBtn").addEventListener("click",mark);
+  $("nextWaypoint").addEventListener("change",()=>{waypointManual=true;renderNext();renderPlot();});
+  for(const id of ["routeName","routeEditor"])$(id).addEventListener("input",()=>{routeDirty=true;$("routeState").className="route-state";text("routeState","有未保存的修改。");});
+  $("tagHeight").addEventListener("input",()=>{heightDirty=true;$("heightState").className="route-state";text("heightState","高度有未保存的修改，开始采集前请先保存。");});
+  document.addEventListener("keydown",e=>{if(e.repeat||e.ctrlKey||e.metaKey||e.altKey||e.isComposing||e.key.toLowerCase()!=="m")return;const target=e.target;if(target instanceof Element&&target.closest("input,textarea,select,[contenteditable=true]"))return;e.preventDefault();mark();});
+  for(const id of ["showAutomatic","showCorrected","showAutomaticPaired"])$(id).addEventListener("change",()=>{if(state)renderSolutions();renderPlot();});$("zoomIn").addEventListener("click",()=>{zoom=Math.min(8,zoom*1.3);renderPlot();});$("zoomOut").addEventListener("click",()=>{zoom=Math.max(.25,zoom/1.3);renderPlot();});$("fitBtn").addEventListener("click",()=>{zoom=1;renderPlot();});
+  if(window.ResizeObserver)new ResizeObserver(renderPlot).observe($("plotWrap"));else window.addEventListener("resize",renderPlot);
+  window.addEventListener("beforeunload",e=>{if(isRecording()){e.preventDefault();e.returnValue="";}});
+  renderPlot();poll();
+})();
+</script>
+</body>
+</html>

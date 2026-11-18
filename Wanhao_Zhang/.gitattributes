@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.bin binary
+# Keep upstream formatting and frozen inference hashes across platforms.
+firmware/** -whitespace
+src/automatic_branch_runtime/** -text -whitespace
+src/route_global_offset_candidate.json -text

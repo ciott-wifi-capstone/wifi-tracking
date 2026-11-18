@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "description": "Example geometry and locally administered MACs. Replace with your measured deployment.",
+  "expected_firmware_sha256": "170e90965728c6f0b9b7829260bae19b9e2061d899bef679d647ad286d734494",
+  "nodes": {
+    "A0": {
+      "mac": "02:00:00:00:00:00",
+      "ap_mac": "02:00:00:00:00:01",
+      "antenna_height_m": 1.4,
+      "firmware": {
+        "application_sha256": "170e90965728c6f0b9b7829260bae19b9e2061d899bef679d647ad286d734494"
+      }
+    },
+    "A1": {
+      "mac": "02:00:00:00:01:00",
+      "ap_mac": "02:00:00:00:01:01",
+      "antenna_height_m": 1.5,
+      "firmware": {
+        "application_sha256": "170e90965728c6f0b9b7829260bae19b9e2061d899bef679d647ad286d734494"
+      },
+      "position_xy_m": [
+        0.0,
+        0.0
+      ]
+    },
+    "A2": {
+      "mac": "02:00:00:00:02:00",
+      "ap_mac": "02:00:00:00:02:01",
+      "antenna_height_m": 1.5,
+      "firmware": {
+        "application_sha256": "170e90965728c6f0b9b7829260bae19b9e2061d899bef679d647ad286d734494"
+      },
+      "position_xy_m": [
+        10.0,
+        0.0
+      ]
+    },
+    "A3": {
+      "mac": "02:00:00:00:03:00",
+      "ap_mac": "02:00:00:00:03:01",
+      "antenna_height_m": 1.5,
+      "firmware": {
+        "application_sha256": "170e90965728c6f0b9b7829260bae19b9e2061d899bef679d647ad286d734494"
+      },
+      "position_xy_m": [
+        20.0,
+        0.0
+      ]
+    },
+    "A4": {
+      "mac": "02:00:00:00:04:00",
+      "ap_mac": "02:00:00:00:04:01",
+      "antenna_height_m": 1.5,
+      "firmware": {
+        "application_sha256": "170e90965728c6f0b9b7829260bae19b9e2061d899bef679d647ad286d734494"
+      },
+      "position_xy_m": [
+        0.0,
+        15.0
+      ]
+    },
+    "A5": {
+      "mac": "02:00:00:00:05:00",
+      "ap_mac": "02:00:00:00:05:01",
+      "antenna_height_m": 1.5,
+      "firmware": {
+        "application_sha256": "170e90965728c6f0b9b7829260bae19b9e2061d899bef679d647ad286d734494"
+      },
+      "position_xy_m": [
+        10.0,
+        15.0
+      ]
+    },
+    "A6": {
+      "mac": "02:00:00:00:06:00",
+      "ap_mac": "02:00:00:00:06:01",
+      "antenna_height_m": 1.5,
+      "firmware": {
+        "application_sha256": "170e90965728c6f0b9b7829260bae19b9e2061d899bef679d647ad286d734494"
+      },
+      "position_xy_m": [
+        20.0,
+        15.0
+      ]
+    }
+  }
+}
