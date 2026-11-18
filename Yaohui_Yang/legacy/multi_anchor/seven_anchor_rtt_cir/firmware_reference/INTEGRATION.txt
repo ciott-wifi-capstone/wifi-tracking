@@ -1,0 +1,42 @@
+REFERENCE MODULE, NOT A COMPLETE FIRMWARE REPLACEMENT.
+The uploaded ZIP does not contain ESP-IDF C/C++ sources or CMakeLists.txt.
+
+1. Copy cir_telemetry.[ch] into the Tag project's main/ folder.
+2. Add cir_telemetry.c to SRCS inside main/CMakeLists.txt. Include header in main.
+3. Enable CONFIG_ESP_WIFI_CSI_ENABLED in menuconfig.
+4. Call ESP_ERROR_CHECK(cir_telemetry_init()) after Wi-Fi is initialized AND started.
+5. Immediately before starting the FTM exchange for an Anchor, call
+     cir_begin_slot(round_id, anchor_id, current_bssid);
+   where current_bssid is the actual MAC of the AP sending CSI packets.
+6. After the FTM window ends, call cir_end_slot().
+7. BEFORE writing MROUND_META for that round, call cir_wait_drain().
+8. Continue printing existing MROUND_START / MFUSED / MROUND_META EXACTLY as before.
+9. Set the UART console baud in ESP-IDF to 460800 and anchors_7.json baudrate=460800
+   if needed for throughput. Both ends must use the SAME baud; test first.
+10. Verify that CSIRAW.mac exactly matches the source MAC of the MFUSED BSSID.
+    Zero matching packets: investigate source MAC, link direction, channel and CSI
+    packet generation. CSI may not automatically be available for every FTM exchange.
+11. Use fixed 20 MHz LLTF during this prototype. 40 MHz and HT-LTF payloads
+    have DIFFERENT subcarrier layouts; do not relabel them as 20 MHz LLTF.
+12. Callback prints nothing. CSI is copied into a FreeRTOS queue, then sent by task.
+13. This is reference code for ESP-IDF 5.x S3. Integrate and compile against YOUR
+    project's exact SDK version; callback timing and FTM API sequencing must be tested.
+
+Example placement around your ORIGINAL FTM per-anchor routine (pseudocode only):
+
+    cir_begin_slot(round_id, anchor_id, ap_bssid);
+    // invoke the existing FTM exchange and keep emitting MFUSED as originally
+    // implemented, using timestamps derived from the same esp_timer clock
+    cir_end_slot();
+
+After all anchor slots of the round, and BEFORE the original MROUND_META:
+    cir_wait_drain();
+
+Important: this module only observes CSI for received frames from the BSSID
+while its slot is active. Some FTM sessions may yield ZERO matching CSI frames.
+In that case generate legitimate AP data/traffic in the FTM sampling window,
+inspect actual source MAC/channel, and verify ESP-IDF CSI capability/config.
+Do not fabricate CSI frames or relabel another AP's packets as this Anchor.
+If compile errors appear, check the exact ESP-IDF release and component
+requirements (esp_wifi, esp_timer, mbedtls, FreeRTOS); no exact Tag firmware
+was supplied for integration or compilation here.

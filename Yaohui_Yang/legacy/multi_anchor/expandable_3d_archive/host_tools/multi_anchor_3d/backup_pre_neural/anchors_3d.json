@@ -1,0 +1,88 @@
+{
+  "serial_port": "COM22",
+  "baudrate": 115200,
+  "coordinates_verified": false,
+  "display_reference": "lowest_z_anchor",
+  "display_padding_ratio": 0.12,
+  "display_min_span_m": 4.0,
+  "max_measurement_age_s": 3.0,
+  "voxel_size_m": 0.5,
+  "positioning": {
+    "mode": "2d_fixed_z",
+    "fixed_z_m": 0.0
+  },
+  "calibration_profile": {
+    "name": "example",
+    "status": "unverified",
+    "description": "Synthetic layout. Replace with measured coordinates for your installation."
+  },
+  "range_correction": {
+    "mode": "apply",
+    "model_path": "range_correction.json",
+    "max_abs_delta_m": 20.0
+  },
+  "room_bounds_m": {
+    "min": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "max": [
+      9.0,
+      5.0,
+      3.0
+    ]
+  },
+  "anchors": {
+    "1": {
+      "x_m": 1.0,
+      "y_m": 1.0,
+      "z_m": 1.7,
+      "scale": 1.0,
+      "bias_m": 0.0
+    },
+    "2": {
+      "x_m": 4.0,
+      "y_m": 1.0,
+      "z_m": 1.7,
+      "scale": 1.0,
+      "bias_m": 0.0
+    },
+    "3": {
+      "x_m": 7.0,
+      "y_m": 1.0,
+      "z_m": 1.7,
+      "scale": 1.0,
+      "bias_m": 0.0
+    },
+    "4": {
+      "x_m": 7.0,
+      "y_m": 4.0,
+      "z_m": 1.7,
+      "scale": 1.0,
+      "bias_m": 0.0,
+      "enabled": false
+    },
+    "5": {
+      "x_m": 4.0,
+      "y_m": 4.0,
+      "z_m": 1.7,
+      "scale": 1.0,
+      "bias_m": 0.0
+    },
+    "6": {
+      "x_m": 1.0,
+      "y_m": 4.0,
+      "z_m": 1.7,
+      "scale": 1.0,
+      "bias_m": 0.0
+    },
+    "7": {
+      "x_m": 4.0,
+      "y_m": 2.5,
+      "z_m": 1.7,
+      "scale": 1.0,
+      "bias_m": 0.0
+    }
+  }
+}

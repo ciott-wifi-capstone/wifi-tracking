@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+captures/
+results/
+anchor/build*/
+tag/build*/
+anchor/sdkconfig.*
+tag/sdkconfig.*
+!anchor/sdkconfig.defaults
+!tag/sdkconfig.defaults

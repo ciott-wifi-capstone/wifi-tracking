@@ -1,0 +1,55 @@
+# Local configuration and credentials
+.env
+.env.*
+*.local.json
+sdkconfig
+sdkconfig.*
+!sdkconfig*.defaults
+
+# ESP-IDF and Python generated files
+build/
+build-*/
+build_*/
+managed_components/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.vscode/
+.idea/
+*.obj
+*.elf
+*.bin
+*.map
+
+# Recorded data, fitted models and private site assets
+data/
+recordings/
+captures/
+measurements/
+results/
+experiments/
+example_data/
+models/
+models_gt*/
+*.pt
+*.pth
+*.onnx
+*.pkl
+*.log
+*.zip
+*.raw
+floor_plan.jpeg
+.DS_Store
+Thumbs.db
+
+# Private calibrations and generated reports
+fit/
+replay_results/
+calibration*.json
+range_correction.json
+fast_csi_ftm_model.json
+*.csv
+!partitions.csv
+*.jsonl

@@ -1,0 +1,31 @@
+cd C:\esp\esp-idf-v6.0
+export.bat
+idf.py --version
+
+cd C:\esp\rtt_initiator
+idf.py set-target esp32s3
+idf.py build
+idf.py -p COM7 flash monitor
+idf.py menuconfig
+
+cd C:\esp\esp-idf-v6.0
+.\export.bat
+cd "C:\\Users\\YOUR_USER\Desktop\thesis\02_two_esp_archive"
+python host_tools\rtt_live_plot.py --port COM7
+
+
+
+
+cd C:\\Users\\YOUR_USER\Desktop\thesis\02_two_esp_archive\firmware\rtt_responder
+idf.py -p COM8 flash monitor
+
+cd C:\\Users\\YOUR_USER\Desktop\thesis\02_two_esp_archive\firmware\rtt_csi_combined
+idf.py -p COM7 flash monitor
+
+cd C:\\Users\\YOUR_USER\Desktop\thesis\02_two_esp_archive
+python host_tools\rtt_csi_live_plot.py
+cd C:\\Users\\YOUR_USER\Desktop\thesis\02_two_esp_archive
+python host_tools\rtt_csi_raw_logger.py
+
+cd "C:\\Users\\YOUR_USER\Desktop\thesis\02_two_esp_archive\firmware\rtt_csi_combined"
+idf.py menuconfig

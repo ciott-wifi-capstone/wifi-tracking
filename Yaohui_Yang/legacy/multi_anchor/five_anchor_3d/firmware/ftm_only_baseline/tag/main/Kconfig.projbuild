@@ -1,0 +1,22 @@
+menu "Multi-anchor tag"
+    config FTM_MAX_ANCHORS
+        int "Maximum anchors"
+        range 3 8
+        default 4
+    config FTM_FRAME_COUNT
+        int "FTM frames per session (16/24/32/64)"
+        range 16 64
+        default 16
+    config FTM_BURST_PERIOD
+        int "Burst period in units of 100 ms (0 = no preference)"
+        range 0 100
+        default 0
+    config FTM_SESSION_TIMEOUT_MS
+        int "Per-anchor timeout (ms)"
+        range 200 5000
+        default 1200
+    config FTM_RESCAN_PERIOD_MS
+        int "Anchor rescan period (ms)"
+        range 1000 60000
+        default 10000
+endmenu
