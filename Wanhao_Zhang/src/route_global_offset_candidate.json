@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "candidate_version": "D0_global_pair_balanced_v1",
+  "frozen_at_utc": "2026-10-17T04:57:40.544535+00:00",
+  "training_campaign": "20261017_R1",
+  "training_events_n": 11827,
+  "training_directed_links_n": 30,
+  "training_physical_pairs_n": 15,
+  "method": "Median signed residual per directed link; median across two directions per physical pair; median across equally weighted physical pairs.",
+  "signed_residual_definition": "d_WiPRO - independent_3D_reference_m",
+  "offset_to_subtract_m": 1.6817616377125457,
+  "prediction_formula": "d_corrected_m = d_WiPRO_m - offset_to_subtract_m",
+  "correction_scope": "One global constant; no per-board or per-link lookup; no LOS/NLOS label or true distance at prediction time.",
+  "pair_estimates": [
+    {
+      "physical_pair": "A1|A2",
+      "directional_signed_residual_medians_m": {
+        "A1->A2": 0.5134734195117971,
+        "A2->A1": -0.03452658048820467
+      },
+      "pair_offset_m": 0.23947341951179624
+    },
+    {
+      "physical_pair": "A1|A3",
+      "directional_signed_residual_medians_m": {
+        "A1->A3": 0.9352896926803815,
+        "A3->A1": 1.072289692680382
+      },
+      "pair_offset_m": 1.0037896926803818
+    },
+    {
+      "physical_pair": "A1|A4",
+      "directional_signed_residual_medians_m": {
+        "A1->A4": 2.452981672040476,
+        "A4->A1": 2.3159816720404773
+      },
+      "pair_offset_m": 2.3844816720404767
+    },
+    {
+      "physical_pair": "A1|A5",
+      "directional_signed_residual_medians_m": {
+        "A1->A5": 5.4722000043242325,
+        "A5->A1": 5.609200004324233
+      },
+      "pair_offset_m": 5.540700004324233
+    },
+    {
+      "physical_pair": "A1|A6",
+      "directional_signed_residual_medians_m": {
+        "A1->A6": 4.743964305112392,
+        "A6->A1": 5.01786430511239
+      },
+      "pair_offset_m": 4.880914305112391
+    },
+    {
+      "physical_pair": "A2|A3",
+      "directional_signed_residual_medians_m": {
+        "A2->A3": 0.6771712435575932,
+        "A3->A2": 1.4990712435575944
+      },
+      "pair_offset_m": 1.0881212435575938
+    },
+    {
+      "physical_pair": "A2|A4",
+      "directional_signed_residual_medians_m": {
+        "A2->A4": 3.048699597671172,
+        "A4->A2": 3.4596995976711717
+      },
+      "pair_offset_m": 3.254199597671172
+    },
+    {
+      "physical_pair": "A2|A5",
+      "directional_signed_residual_medians_m": {
+        "A2->A5": 1.4763116377125458,
+        "A5->A2": 1.8872116377125456
+      },
+      "pair_offset_m": 1.6817616377125457
+    },
+    {
+      "physical_pair": "A2|A6",
+      "directional_signed_residual_medians_m": {
+        "A2->A6": 8.790078801444407,
+        "A6->A2": 9.201078801444408
+      },
+      "pair_offset_m": 8.995578801444408
+    },
+    {
+      "physical_pair": "A3|A4",
+      "directional_signed_residual_medians_m": {
+        "A3->A4": 10.049856190894708,
+        "A4->A3": 8.40605619089471
+      },
+      "pair_offset_m": 9.227956190894709
+    },
+    {
+      "physical_pair": "A3|A5",
+      "directional_signed_residual_medians_m": {
+        "A3->A5": 7.3789137064389045,
+        "A5->A3": 6.146113706438907
+      },
+      "pair_offset_m": 6.762513706438906
+    },
+    {
+      "physical_pair": "A3|A6",
+      "directional_signed_residual_medians_m": {
+        "A3->A6": 0.05320405474001966,
+        "A6->A3": 0.05320405474001966
+      },
+      "pair_offset_m": 0.05320405474001966
+    },
+    {
+      "physical_pair": "A4|A5",
+      "directional_signed_residual_medians_m": {
+        "A4->A5": 0.5125734581801193,
+        "A5->A4": 0.5125734581801193
+      },
+      "pair_offset_m": 0.5125734581801193
+    },
+    {
+      "physical_pair": "A4|A6",
+      "directional_signed_residual_medians_m": {
+        "A4->A6": 1.016690233028445,
+        "A6->A4": 1.4275902330284431
+      },
+      "pair_offset_m": 1.222140233028444
+    },
+    {
+      "physical_pair": "A5|A6",
+      "directional_signed_residual_medians_m": {
+        "A5->A6": 1.1507293165795716,
+        "A6->A5": 1.1507293165795716
+      },
+      "pair_offset_m": 1.1507293165795716
+    }
+  ],
+  "training_only": true,
+  "independent_validation_completed": false,
+  "future_validation_role": "A0 at new independently measured static positions; compare frozen candidate against pure Wi-PRO on identical paired events.",
+  "new_A0_in_training_round": false,
+  "unseen_hardware_claim": false,
+  "hardware_note": "The validation initiator had appeared in earlier experiments; unseen hardware is not claimed.",
+  "clipping_or_smoothing_applied": false,
+  "firmware_or_live_host_modified": false,
+  "validation_use_note": "Do not refit from A0 validation results and retain the same test claim. A changed candidate needs a fresh independent test.",
+  "input_sha256": {
+    "pairwise_20261017_R1_summary/round_summary.json": "0c34ed054a65dc6a2de5503990ef36433201269054ae921bd87a9e136f34460b",
+    "pairwise_20261017_R1_summary/static_evaluate/paired_link_metrics.csv": "be61fe9a7e82369ca40c79a81fb3e3e9555813dad184ac416460f5632e4ce757"
+  },
+  "source_sha256": "83f7b456e8f8f23c940ae3c9539be2746d3b3be18e52a6a6197163996c50e215",
+  "packaging_provenance": {
+    "original_file_sha256": "6444d000dc59b448c21878e0a615c62b371b22abd6b04780629a155dd1e60912",
+    "changes": "Personal machine-path labels and radio identity removed. Offset and pair estimates unchanged."
+  }
+}

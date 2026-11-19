@@ -1,0 +1,67 @@
+{
+  "role": "Exact frozen inference model and dependency snapshots; no retraining, no source adaptation",
+  "model_sha256": "3542bdd9209b66d36221956b814e7c7217c3958d5cfad98f038a3e774fdd10cc",
+  "files": [
+    {
+      "file": "automatic_branch_bench.py",
+      "sha256": "6a56053793cfdfe134feb7b7dfbdbf2b3e4d194e34ceb0679b971573ee288c6f",
+      "source": "work/optimization/automatic_branch_bench.py"
+    },
+    {
+      "file": "automatic_branch_core.py",
+      "sha256": "96c715c85a75db9949fcaae923ec6217b4e58c6ddb68f9aa33bbc89b045b486c",
+      "source": "work/optimization/automatic_branch_core.py"
+    },
+    {
+      "file": "condition_feature_bench.py",
+      "sha256": "c893a1253b4e191c1247fcb20434009c9cdc58ca9075060d9636a081959bb099",
+      "source": "work/optimization/condition_feature_bench.py"
+    },
+    {
+      "file": "calibration_bench.py",
+      "sha256": "79c755a0d3c905f5a7704ba7dbe50918a545d7a427091973a355161ae70dacd7",
+      "source": "work/optimization/calibration_bench.py"
+    },
+    {
+      "file": "wipro_diagnostic_features.py",
+      "sha256": "95929ac2008d8d401d4a4d7154f8acda7f07d46f85f4e09d8aea8248b5314ff5",
+      "source": "work/optimization/wipro_diagnostic_features.py"
+    },
+    {
+      "file": "burst_diagnostic_features.py",
+      "sha256": "6d6d297bce347c9915e09d985aef530e608dbccb31a527ed9e1f5a0a2ee5b0f4",
+      "source": "work/optimization/burst_diagnostic_features.py"
+    },
+    {
+      "file": "wipro_diagnostic_assets/idft_drange.bin",
+      "sha256": "1a346c229eab8f91af1f10e907bb5efc2e6ade368b3bd82fcfe138b0b0374dac",
+      "source": "work/optimization/wipro_diagnostic_assets/idft_drange.bin"
+    },
+    {
+      "file": "wipro_diagnostic_assets/idft_L.bin",
+      "sha256": "c4f5adc962ac351f9c53010153aafc4853201d8d7ebdb116184d80e98362de7c",
+      "source": "work/optimization/wipro_diagnostic_assets/idft_L.bin"
+    },
+    {
+      "file": "wipro_diagnostic_assets/idft_meta.bin",
+      "sha256": "bee72f9c23088d30c32e50a7182c4c9dc808fdec06c5dbae6788d54b3f00c95d",
+      "source": "work/optimization/wipro_diagnostic_assets/idft_meta.bin"
+    },
+    {
+      "file": "wipro_diagnostic_assets/idft_R.bin",
+      "sha256": "f2b00095b5c504fe796e2378db28d94b09d1db1bcface2818b0a9ad18a7a54ce",
+      "source": "work/optimization/wipro_diagnostic_assets/idft_R.bin"
+    },
+    {
+      "file": "wipro_diagnostic_assets/idft_sinc_rise_comp.bin",
+      "sha256": "0aa64674577f50ca1bda9b66d5285e66b81184f501cdb114f6293e46da72de60",
+      "source": "work/optimization/wipro_diagnostic_assets/idft_sinc_rise_comp.bin"
+    },
+    {
+      "file": "automatic_model_bundle.json",
+      "sha256": "3542bdd9209b66d36221956b814e7c7217c3958d5cfad98f038a3e774fdd10cc",
+      "source": "outputs/results/automatic_branch_20261019_v1/automatic_model_bundle.json"
+    }
+  ],
+  "packaging_note": "Historical source labels made relative for distribution. Frozen helper, model and transform bytes and hashes are unchanged."
+}
